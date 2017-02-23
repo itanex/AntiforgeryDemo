@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,6 +9,7 @@ namespace AntiForgeryDemo.Middleware
     public class AntiForgeryMiddleware
     {
         private readonly RequestDelegate next;
+        private readonly string[] httpVerbs = new string[] { "GET", "HEAD", "OPTIONS", "TRACE" };
 
         public AntiForgeryMiddleware(RequestDelegate next)
         {
@@ -18,17 +18,12 @@ namespace AntiForgeryDemo.Middleware
 
         public async Task Invoke(HttpContext context, IAntiforgery antiforgery)
         {
-            await next.Invoke(context);
-
-            if (string.Equals("GET", context.Request.Method, StringComparison.OrdinalIgnoreCase))
+            if (httpVerbs.Contains(context.Request.Method, StringComparer.OrdinalIgnoreCase))
             {
-                var tokens = antiforgery.GetAndStoreTokens(context);
                 antiforgery.GetAndStoreTokens(context);
-
-                context.Response.Cookies.Append(tokens.CookieToken, tokens.RequestToken);
             }
 
-            context.Response.Headers.Add("X-After", "Goodbye Cruel World");
+            await next.Invoke(context);
         }
     }
 }
