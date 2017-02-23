@@ -16,22 +16,19 @@ namespace AntiForgeryDemo.Middleware
             this.next = next;
         }
 
-        //public async Task Invoke(HttpContext context, IAntiforgery antiforgery)
-        public async Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext context, IAntiforgery antiforgery)
         {
-            //if (string.Equals("GET", context.Request.Method, StringComparison.OrdinalIgnoreCase))
-            //{
-            //    var tokens = antiforgery.GetAndStoreTokens(context);
-            //    antiforgery.GetAndStoreTokens(context);
-
-            //    context.Response.Cookies.Append(tokens.CookieToken, tokens.RequestToken);
-            //}
-
-            context.Response.Cookies.Append("Hello", "World");
-
-            context.Response.Headers.Add("X-BRYAN", "Hello World");
-
             await next.Invoke(context);
+
+            if (string.Equals("GET", context.Request.Method, StringComparison.OrdinalIgnoreCase))
+            {
+                var tokens = antiforgery.GetAndStoreTokens(context);
+                antiforgery.GetAndStoreTokens(context);
+
+                context.Response.Cookies.Append(tokens.CookieToken, tokens.RequestToken);
+            }
+
+            context.Response.Headers.Add("X-After", "Goodbye Cruel World");
         }
     }
 }
