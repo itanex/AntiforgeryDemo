@@ -1,0 +1,12 @@
+# External Modules
+node_modules
+bower_components
+
+# User Specific Files/Directories
+.vs
+*.user
+*lock*
+
+# Compile Targets
+bin
+obj
