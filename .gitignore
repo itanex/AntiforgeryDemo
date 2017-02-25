@@ -1,6 +1,7 @@
 # External Modules
 node_modules
 bower_components
+**/wwwroot/lib
 
 # User Specific Files/Directories
 .vs
@@ -10,3 +11,6 @@ bower_components
 # Compile Targets
 bin
 obj
+
+*.js
+*.js.map
