@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AntiForgeryDemo.Middleware;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using AntiForgeryDemo.Middleware;
-using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
 
 namespace AntiForgeryDemo
 {
@@ -39,6 +33,8 @@ namespace AntiForgeryDemo
             {
                 options.CookieName = "XSRF-TOKEN";
                 options.HeaderName = "X-XSRF-TOKEN";
+                options.FormFieldName = "FORM-XSRF-TOKEN";
+                options.SuppressXFrameOptionsHeader = true;
             });
         }
 
@@ -49,9 +45,10 @@ namespace AntiForgeryDemo
             loggerFactory.AddDebug();
 
             app.UseAntiforgeryTokenMiddleware();
+
+            app.UseStaticFiles();
             
             app.UseMvc();
-
         }
     }
 }
