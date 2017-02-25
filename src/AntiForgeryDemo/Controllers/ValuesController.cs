@@ -12,5 +12,12 @@ namespace AntiForgeryDemo.Controllers
         {
             return new string[] { "value1", "value2" };
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Post(string data)
+        {
+            return Ok(data);
+        }
     }
 }
