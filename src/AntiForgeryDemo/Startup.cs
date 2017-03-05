@@ -25,16 +25,19 @@ namespace AntiForgeryDemo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
+            // Add MVC framework Service
             services.AddMvc();
 
-            // Add AntiForgery Token
+            // Add AntiForgery Token Service
             services.AddAntiforgery(options =>
             {
-                options.CookieName = "XSRF-TOKEN";
+                // This cookie is for AntiForgery ONLY you
+                // This cookie CANNOT be used by any JS library for XSRF support
+                //options.CookieName = "XSRF-TOKEN"; 
+
+                // The name of the Request Header that the AntiForgery Service should
+                // expect to find the AntiForgery Request Token
                 options.HeaderName = "X-XSRF-TOKEN";
-                options.FormFieldName = "FORM-XSRF-TOKEN";
-                options.SuppressXFrameOptionsHeader = true;
             });
         }
 
@@ -44,10 +47,10 @@ namespace AntiForgeryDemo
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            app.UseAntiforgeryTokenMiddleware();
-
             app.UseStaticFiles();
-            
+
+            app.UseAntiforgeryTokenMiddleware("XSRF-TOKEN");
+
             app.UseMvc();
         }
     }
